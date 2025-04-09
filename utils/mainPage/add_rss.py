@@ -1,6 +1,7 @@
 import feedparser
 from bs4 import BeautifulSoup
 
+
 def add_rss(rssAddress):
     feed = feedparser.parse(rssAddress)
     for entry in feed.entries:
@@ -19,4 +20,5 @@ def add_rss(rssAddress):
             entry['image_url'] = image_url
         else:
             entry['image_url']= "https://c-ssl.duitang.com/uploads/blog/202011/16/20201116230615_57a8e.thumb.1000_0.jpg"
+
     return feed.entries
