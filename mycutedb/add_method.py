@@ -77,7 +77,7 @@ def add_Article(entries,rss_id):
                 "Published": entry['published'],
                 "Author": entry['author'],
                 "Content": {
-                    "Value": entry['content'].value,
+                    "Value": entry['content'][0].value,
                     "ImageUrl": entry['image_url']
                 },
                 "IsReaded": False

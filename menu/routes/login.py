@@ -1,20 +1,13 @@
 from datetime import datetime
+
 from flask import session, request, Blueprint
+
+from mycutedb.exist_method import check_email
+from mycutedb.get_method import get_user, get_user_password
+from utils.login.hashPwd import verify_password
 from utils.login.useEmail import send_verification_email
 
 bp = Blueprint('login', __name__)
-
-
-# 临时工具函数（后续应迁移到单独模块）
-def check_email(email):
-    # 示例逻辑，实际需要数据库查询
-    return True
-
-
-def getPwd(email):
-    # 桩函数，实际需要数据库查询
-    return "123"
-
 
 @bp.route('/login', methods=["POST"])
 def login_handler():
@@ -27,19 +20,33 @@ def login_handler():
         return handle_login_verification(data)
     elif action == "login":
         return handle_password_login(data)
+    elif action == "getUser":
+        return handle_getUser(data)
     else:
         return {"success": "400", "msg": "无效操作"}
 
 
-def handle_verification(data):
-    email = data['userEmail']
-    if not check_email(email):
-        return {"success": "200", "msg": "不存在该邮箱"}
+def handle_getUser(data):
+    email = data['Email']
+    print(get_user(email))
+    return {
+        "success": "200",
+        "user": get_user(email)
+    }
 
-    code = send_verification_email(email)
-    session[email] = code
-    session[f'{email}_expire'] = datetime.now().timestamp() + 300
-    return {"success": "500", "msg": "验证码发送成功"}
+def handle_verification(data):
+    try:
+        email = data['userEmail']
+        if not check_email(email):
+            return {"success": "500", "msg": "不存在该邮箱"}
+
+        code = send_verification_email(email)
+        session[email] = code
+        session[f'{email}_expire'] = datetime.now().timestamp() + 300
+        return {"success": "200", "msg": "验证码发送成功"}
+    except Exception as e:
+        print(e)
+        return {"success": "400", "msg": e}
 
 
 def handle_login_verification(data):
@@ -54,14 +61,12 @@ def handle_login_verification(data):
 
     session.pop(email)
     session.pop(f'{email}_expire')
+
+    user = get_user(email)
+
     return {
         "success": "500",
-        "user": {
-            "avatar": "https://example.com/avatar.png",
-            "userId": "100001",
-            "username": "陈苡於"
-        },
-        "rssSource": "https://rsshub.app"
+        "user": user
     }
 
 
@@ -72,16 +77,11 @@ def handle_password_login(data):
     if not check_email(email):
         return {"success": "200", "msg": "不存在该邮箱"}
 
-    if not getPwd(email):  # 实际应验证密码哈希
+    if verify_password(password, get_user_password(email)):
+        return {
+            "success": "500",
+            "user": get_user(email)
+        }
+    else:
         return {"success": "400", "msg": "密码错误"}
-
-    return {
-        "success": "500",
-        "user": {
-            "avatar": "https://example.com/avatar.png",
-            "userId": "100001",
-            "username": "陈苡於"
-        },
-        "rssSource": "https://rsshub.app"
-    }
 

@@ -1,8 +1,12 @@
 import feedparser
 from bs4 import BeautifulSoup
 
+from mycutedb.add_method import add_Rss
+from mycutedb.get_method import get_user_id
 
-def add_rss(rssAddress):
+
+def add_rss(email,rss_name,rssAddress):
+    userId = get_user_id(email)
     feed = feedparser.parse(rssAddress)
     for entry in feed.entries:
         print(entry.title)
@@ -21,4 +25,5 @@ def add_rss(rssAddress):
         else:
             entry['image_url']= "https://c-ssl.duitang.com/uploads/blog/202011/16/20201116230615_57a8e.thumb.1000_0.jpg"
 
+    add_Rss(userId,rss_name,rssAddress,feed.entries)
     return feed.entries
