@@ -28,7 +28,6 @@ def add_User(userData):
         "AvatarURL": userData["AvatarURL"],
         "Email": userData["userEmail"],
         "Password": userData["Password"],
-        "RssSource": userData["RssSource"],
         "Profile": userData["Profile"],
         "FeedbackId":[],
         "RssSubscriptions": [],
@@ -47,7 +46,7 @@ def add_Feedback(user_id, feedback, score):
     feedback_id =  feedback_collection.insert_one(feedback_doc).inserted_id
     users_collection.update_one(
         {"_id": user_id},
-        {"$push": {"Feedback": feedback_id}}
+        {"$push": {"FeedbackId": feedback_id}}
     )
     return True
 

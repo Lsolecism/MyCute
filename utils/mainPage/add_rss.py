@@ -8,6 +8,7 @@ from mycutedb.get_method import get_user_id
 def add_rss(email,rss_name,rssAddress):
     userId = get_user_id(email)
     feed = feedparser.parse(rssAddress)
+    print(feed)
     for entry in feed.entries:
         print(entry.title)
         print(entry.description)
@@ -27,3 +28,4 @@ def add_rss(email,rss_name,rssAddress):
 
     add_Rss(userId,rss_name,rssAddress,feed.entries)
     return feed.entries
+

@@ -29,3 +29,8 @@ def get_article(rss_id,link):
     for article in rss["Articles"]:
         if article["Link"] == link:
             return article
+
+def get_rss_id(user_id):
+    user = users_collection.find_one({"_id": user_id})
+    rss_ids = user["RssSubscriptions"]
+    return rss_ids

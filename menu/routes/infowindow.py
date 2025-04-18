@@ -19,7 +19,6 @@ def update_info():
     return {"success": "200"}
 
 
-
 @bp.route('/uploadImage', methods=['POST'])
 def upload_image():
     print("Received request:", request.files)
@@ -31,7 +30,6 @@ def upload_image():
     if file.filename == '':
         print("Invalid file name")
         return {'error': '无效文件名'}, 400
-
     # 将文件数据转为二进制
     file_data = Binary(file.read())
     content_type = file.content_type

@@ -8,7 +8,9 @@ bp = Blueprint('rss', __name__)
 @bp.route('/rss', methods=["POST"])
 def add_rss_handler():
     data = request.get_json()
+    print(data)
     # 前端返回来的userId其实是UID
+    # body: JSON.stringify({ action: 'addRss',email:email,rss_name:newName,rss_address:newAddress})})
     email = data['email']
     rss_name = data['rss_name']
     rss_address = data['rss_address']
